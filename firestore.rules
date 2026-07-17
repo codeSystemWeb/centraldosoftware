@@ -1,0 +1,30 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    // Lista de e-mails admin. Troque pelos seus antes de publicar as regras,
+    // ou migre para Firebase Auth custom claims para algo mais robusto.
+    function isAdmin() {
+      return request.auth != null &&
+        request.auth.token.email in [
+          'centraldosoftwarers@gmail.com'
+        ];
+    }
+
+    // Produtos: qualquer visitante pode ler (loja publica),
+    // so admin pode criar/editar/excluir.
+    match /products/{productId} {
+      allow read: if true;
+      allow write: if isAdmin();
+    }
+
+    // Pedidos: o cliente NUNCA escreve pedido diretamente (isso e feito
+    // pelo backend com o Admin SDK, que ignora estas regras).
+    // O cliente so pode LER os proprios pedidos pagos; admin le tudo.
+    match /orders/{orderId} {
+      allow read: if isAdmin() ||
+        (request.auth != null && request.auth.token.email == resource.data.customerEmail);
+      allow write: if false;
+    }
+  }
+}
