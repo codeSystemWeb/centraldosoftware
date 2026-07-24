@@ -5,6 +5,8 @@ import { db } from "@/lib/firebase";
 import ProductCard from "@/components/ProductCard";
 import LiveShoppers from "@/components/LiveShoppers";
 
+import useAnalytics from "@/hooks/useAnalytics";
+
 function sortProducts(list) {
   return [...list].sort((a, b) => {
     const oa = a.order ?? 999999;
@@ -36,6 +38,8 @@ export default function StorePage() {
   const [loading, setLoading] = useState(true);
   const [search, setSearch] = useState("");
   const [category, setCategory] = useState("");
+
+  useAnalytics();
 
   useEffect(() => {
     const unsub = onSnapshot(

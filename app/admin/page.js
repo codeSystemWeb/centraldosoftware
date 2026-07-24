@@ -14,6 +14,11 @@ function DashboardContent() {
   const [productCount, setProductCount] = useState(0);
   const [loading, setLoading] = useState(true);
 
+  const [totalVisits, setTotalVisits] = useState("--");
+  const [todayVisits, setTodayVisits] = useState("--");
+  const [onlineUsers, setOnlineUsers] = useState("--");
+  const [conversion, setConversion] = useState("--");
+
   useEffect(() => {
     async function load() {
       const [ordersSnap, productsSnap] = await Promise.all([
@@ -28,6 +33,12 @@ function DashboardContent() {
       setLoading(false);
     }
     load();
+
+    // Analytics (será implementado depois)
+    setTotalVisits("--");
+    setTodayVisits("--");
+    setOnlineUsers("--");
+    setConversion("--");
   }, []);
 
   if (loading) return <p className="font-mono text-xs">Carregando...</p>;
@@ -42,11 +53,33 @@ function DashboardContent() {
 
   return (
     <div>
-      <div className="mb-8 grid grid-cols-2 gap-4 md:grid-cols-4">
+      <div className="mb-8 grid grid-cols-2 gap-4 lg:grid-cols-4 xl:grid-cols-8">
         <Stat label="Receita total" value={formatPrice(revenue)} />
         <Stat label="Pedidos pagos" value={orders.length} />
         <Stat label="Ticket medio" value={formatPrice(avg)} />
         <Stat label="Produtos ativos" value={productCount} />
+        <Stat
+          label="Visitas"
+          value={totalVisits}
+          color="emerald"
+        />
+
+        {/* <Stat
+          label="Hoje"
+          value={todayVisits}
+          color="sky"
+        />
+
+        <Stat
+          label="Online"
+          value={onlineUsers}
+          color="green"
+        />
+
+        <Stat
+          label="Conversão"
+          value={conversion}
+        /> */}
       </div>
       <h2 className="mb-4 font-display text-lg ">Mais vendidos</h2>
       {ranked.length === 0 ? (
@@ -68,11 +101,26 @@ function DashboardContent() {
   );
 }
 
-function Stat({ label, value }) {
+function Stat({ label, value, color = "blue" }) {
+
+  const colors = {
+    blue: "text-brand-blueLight",
+    emerald: "text-emerald-400",
+    green: "text-green-400",
+    sky: "text-sky-400",
+    orange: "text-orange-400",
+    red: "text-red-400"
+  };
+
   return (
-    <div className="rounded-xl border border-white/10 bg-brand-navy/60 p-5">
-      <p className="font-mono text-[10px] uppercase tracking-wide">{label}</p>
-      <p className="mt-2 font-display text-2xl text-brand-blueLight">{value}</p>
+    <div className="rounded-xl border border-white/10 bg-brand-navy/60 p-5 transition-all duration-300 hover:-translate-y-1 hover:border-brand-blue/40 hover:shadow-lg hover:shadow-brand-blue/10">
+      <p className="font-mono text-[10px] uppercase tracking-wide text-white/60">
+        {label}
+      </p>
+
+      <p className={`mt-2 font-display text-2xl ${colors[color] || colors.blue}`}>
+        {value}
+      </p>
     </div>
   );
 }
