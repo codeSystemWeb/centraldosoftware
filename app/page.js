@@ -5,7 +5,7 @@ import { db } from "@/lib/firebase";
 import ProductCard from "@/components/ProductCard";
 import LiveShoppers from "@/components/LiveShoppers";
 
-import useAnalytics from "@/hooks/useAnalytics";
+import useAnalytics from "../lib/hooks/useAnalytics";
 
 function sortProducts(list) {
   return [...list].sort((a, b) => {
